@@ -23,15 +23,14 @@ export default function App() {
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
-      <DiscountProvider locale="en-US" ianaTimezone="America/Toronto">
-        <NavMenu>
-          <Link to="/app" rel="home">
-            Home
-          </Link>
-          <Link to="/app/additional">Additional page</Link>
-        </NavMenu>
-        <Outlet />
-      </DiscountProvider>
+      <DiscountProvider></DiscountProvider>
+      <NavMenu>
+        <Link to="/app" rel="home">
+          Home
+        </Link>
+        <Link to="/app/additional">Additional page</Link>
+      </NavMenu>
+      <Outlet />
     </AppProvider>
   );
 }
