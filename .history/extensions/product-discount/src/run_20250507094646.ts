@@ -6,7 +6,7 @@ const EMPTY_DISCOUNT: FunctionRunResult = {
   discounts: [],
 };
 
-// type Configuration = {};
+type Configuration = {};
 
 export function run(input: RunInput): FunctionRunResult {
   const targets = input.cart.lines
