@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Link, redirect, useFetcher } from "@remix-run/react";
+import { redirect, useFetcher } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -10,12 +10,14 @@ import {
   BlockStack,
   Box,
   List,
+  Link,
   InlineStack,
 } from "@shopify/polaris";
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  redirect("/app/app.volume-discount.");
   await authenticate.admin(request);
 
   return null;
@@ -107,16 +109,16 @@ export default function Index() {
       shopify.toast.show("Product created");
     }
   }, [productId, shopify]);
-  // const generateProduct = () => fetcher.submit({}, { method: "POST" });
+  const generateProduct = () => fetcher.submit({}, { method: "POST" });
 
   return (
     <Page>
       <TitleBar title="Remix app template">
-        <Link to={"volume-discount/9e014130-9553-4545-a1f9-14bd5949af8b/new"}>
-          <button variant="primary">Create a Discount</button>
-        </Link>
+        <button variant="primary" onClick={generateProduct}>
+          Generate a product
+        </button>
       </TitleBar>
-      {/* <BlockStack gap="500">
+      <BlockStack gap="500">
         <Layout>
           <Layout.Section>
             <Card>
@@ -327,7 +329,7 @@ export default function Index() {
             </BlockStack>
           </Layout.Section>
         </Layout>
-      </BlockStack> */}
+      </BlockStack>
     </Page>
   );
 }

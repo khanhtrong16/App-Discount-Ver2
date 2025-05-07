@@ -112,7 +112,9 @@ export default function Index() {
   return (
     <Page>
       <TitleBar title="Remix app template">
-        <Link to={"volume-discount/9e014130-9553-4545-a1f9-14bd5949af8b/new"}>
+        <Link
+          to={"app.volume-discount.9e014130-9553-4545-a1f9-14bd5949af8b.new"}
+        >
           <button variant="primary">Create a Discount</button>
         </Link>
       </TitleBar>

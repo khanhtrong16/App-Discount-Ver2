@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Link, redirect, useFetcher } from "@remix-run/react";
+import { redirect, useFetcher } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -112,9 +112,8 @@ export default function Index() {
   return (
     <Page>
       <TitleBar title="Remix app template">
-        <Link to={"volume-discount/9e014130-9553-4545-a1f9-14bd5949af8b/new"}>
-          <button variant="primary">Create a Discount</button>
-        </Link>
+        <Link></Link>
+        <button variant="primary">Create a Discount</button>
       </TitleBar>
       {/* <BlockStack gap="500">
         <Layout>

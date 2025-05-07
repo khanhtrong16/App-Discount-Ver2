@@ -30,7 +30,7 @@ export default function App() {
           <Link
             to={`app.volume-discount.9e014130-9553-4545-a1f9-14bd5949af8b.new`}
           >
-            Create Discount
+            Additional page
           </Link>
         </ui-nav-menu>
         <Outlet />
