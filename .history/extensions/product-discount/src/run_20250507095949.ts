@@ -17,7 +17,7 @@ export function run(input: RunInput): FunctionRunResult {
   }
   const targets = input.cart.lines
     // Only include cart lines with a quantity of two or more
-    .filter((line) => line.quantity >= configuration.quantity)
+    .filter((line) => line.quantity >= 2)
     .map((line) => {
       return /** @type {Target} */ {
         // Use the cart line ID to create a discount target
@@ -40,7 +40,7 @@ export function run(input: RunInput): FunctionRunResult {
         // Define a percentage-based discount
         value: {
           percentage: {
-            value: configuration.percentage.toString(),
+            value: "10.0",
           },
         },
       },

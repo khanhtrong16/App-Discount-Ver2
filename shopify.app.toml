@@ -3,11 +3,12 @@
 client_id = "1c7489235ff789c56b0dafa86f8590ad"
 name = "Discounts-APP"
 handle = "discounts-app-103"
-application_url = "https://example.com/"
+application_url = "https://ant-villages-attempting-oz.trycloudflare.com"
 embedded = true
 
 [build]
 include_config_on_deploy = true
+automatically_update_urls_on_dev = true
 
 [webhooks]
 api_version = "2025-04"
@@ -25,7 +26,11 @@ api_version = "2025-04"
 scopes = "write_products, write_discounts, write_discounts_allocator_functions, read_products"
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [
+  "https://ant-villages-attempting-oz.trycloudflare.com/auth/callback",
+  "https://ant-villages-attempting-oz.trycloudflare.com/auth/shopify/callback",
+  "https://ant-villages-attempting-oz.trycloudflare.com/api/auth/callback"
+]
 
 [pos]
 embedded = true

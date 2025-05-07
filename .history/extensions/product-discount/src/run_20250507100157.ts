@@ -40,7 +40,7 @@ export function run(input: RunInput): FunctionRunResult {
         // Define a percentage-based discount
         value: {
           percentage: {
-            value: configuration.percentage.toString(),
+            value: "10.0",
           },
         },
       },
