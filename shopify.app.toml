@@ -3,7 +3,7 @@
 client_id = "1c7489235ff789c56b0dafa86f8590ad"
 name = "Discounts-APP"
 handle = "discounts-app-103"
-application_url = "https://ant-villages-attempting-oz.trycloudflare.com"
+application_url = "https://iraqi-celebrities-luxury-santa.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "write_products, write_discounts, write_discounts_allocator_functions, 
 
 [auth]
 redirect_urls = [
-  "https://ant-villages-attempting-oz.trycloudflare.com/auth/callback",
-  "https://ant-villages-attempting-oz.trycloudflare.com/auth/shopify/callback",
-  "https://ant-villages-attempting-oz.trycloudflare.com/api/auth/callback"
+  "https://iraqi-celebrities-luxury-santa.trycloudflare.com/auth/callback",
+  "https://iraqi-celebrities-luxury-santa.trycloudflare.com/auth/shopify/callback",
+  "https://iraqi-celebrities-luxury-santa.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
