@@ -3,33 +3,33 @@
 client_id = "1c7489235ff789c56b0dafa86f8590ad"
 name = "Discounts-APP"
 handle = "discounts-app-103"
-application_url = "https://appreciated-rec-operational-references.trycloudflare.com"
+application_url = "https://ho-pentium-shot-scripts.trycloudflare.com"
 embedded = true
 
 [build]
-include_config_on_deploy = true
 automatically_update_urls_on_dev = true
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2025-04"
 
   [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
-
-  [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]
   uri = "/webhooks/app/scopes_update"
 
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products, write_discounts, write_discounts_allocator_functions, read_products"
+scopes = "read_products,write_discounts,write_discounts_allocator_functions,write_products"
 
 [auth]
 redirect_urls = [
-  "https://appreciated-rec-operational-references.trycloudflare.com/auth/callback",
-  "https://appreciated-rec-operational-references.trycloudflare.com/auth/shopify/callback",
-  "https://appreciated-rec-operational-references.trycloudflare.com/api/auth/callback"
+  "https://ho-pentium-shot-scripts.trycloudflare.com/auth/callback",
+  "https://ho-pentium-shot-scripts.trycloudflare.com/auth/shopify/callback",
+  "https://ho-pentium-shot-scripts.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
