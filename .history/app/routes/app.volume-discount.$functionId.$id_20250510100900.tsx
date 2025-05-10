@@ -221,7 +221,6 @@ export const action: ActionFunction = async ({ request, params }) => {
           },
         },
       );
-      console.log("deleteDiscountResponse-automatic", deleteDiscountResponse);
     }
     return json({ success: true, deleted: true });
   }
@@ -413,8 +412,6 @@ export default function VolumeEdit() {
   const actionData = useActionData<{
     errors?: Array<{ message: string; field: string[] }>;
     discount?: any;
-    success?: boolean;
-    deleted?: boolean;
   }>();
   const navigation = useNavigation();
   const todaysDate = useMemo(() => new Date().toISOString(), []);
@@ -447,9 +444,6 @@ export default function VolumeEdit() {
   // Redirect to discounts list after successful update
   useEffect(() => {
     if (actionData?.errors?.length === 0 && actionData?.discount) {
-      returnToDiscounts();
-    }
-    if (actionData?.success && actionData?.deleted) {
       returnToDiscounts();
     }
   }, [actionData]);

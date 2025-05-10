@@ -133,8 +133,9 @@ export const action = async ({ params, request }) => {
 
     const responseJson = await response.json();
     const errors = responseJson.data.discountCreate?.userErrors;
-    const discount = responseJson.data.discountCreate?.automaticAppDiscount;
+    const discount = responseJson.data.discountCreate?.codeAppDiscount;
     return json({ errors, discount: { ...discount, functionId } });
+    return json({ errors });
   }
 };
 

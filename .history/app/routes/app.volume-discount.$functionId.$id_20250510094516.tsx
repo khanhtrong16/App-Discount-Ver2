@@ -1,10 +1,5 @@
 import { useEffect, useMemo } from "react";
-import {
-  ActionFunction,
-  json,
-  LoaderFunction,
-  redirect,
-} from "@remix-run/node";
+import { ActionFunction, json, LoaderFunction } from "@remix-run/node";
 import { useForm, useField } from "@shopify/react-form";
 import { CurrencyCode } from "@shopify/react-i18n";
 import {
@@ -185,8 +180,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     if (discountMethod === DiscountMethod.Code) {
       deleteDiscountResponse = await admin.graphql(
         `#graphql
-        mutation deleteCodeDiscount($id: ID!) {
-          discountCodeDelete(id: $id) {
+        mutation {
+          discountCodeDelete(id: "gid://shopify/DiscountCodeNode/206265824") {
             deletedCodeDiscountId
             userErrors {
               field
@@ -195,38 +190,14 @@ export const action: ActionFunction = async ({ request, params }) => {
             }
           }
         }`,
-        {
-          variables: {
-            id: `gid://shopify/DiscountCodeNode/${id}`,
-          },
-        },
       );
+      console.log("deleteDiscountResponse", deleteDiscountResponse);
     } else {
       console.log("delete automatic discount");
-      deleteDiscountResponse = await admin.graphql(
-        `#graphql
-        mutation discountAutomaticDelete($id: ID!) {
-          discountAutomaticDelete(id: $id) {
-            deletedAutomaticDiscountId
-            userErrors {
-              field
-              code
-              message
-            }
-          }
-        }`,
-        {
-          variables: {
-            id: `gid://shopify/DiscountAutomaticNode/${id}`,
-          },
-        },
-      );
-      console.log("deleteDiscountResponse-automatic", deleteDiscountResponse);
     }
-    return json({ success: true, deleted: true });
-  }
-  console.log("next");
 
+    return null;
+  }
   const {
     title,
     method,
@@ -413,8 +384,6 @@ export default function VolumeEdit() {
   const actionData = useActionData<{
     errors?: Array<{ message: string; field: string[] }>;
     discount?: any;
-    success?: boolean;
-    deleted?: boolean;
   }>();
   const navigation = useNavigation();
   const todaysDate = useMemo(() => new Date().toISOString(), []);
@@ -447,9 +416,6 @@ export default function VolumeEdit() {
   // Redirect to discounts list after successful update
   useEffect(() => {
     if (actionData?.errors?.length === 0 && actionData?.discount) {
-      returnToDiscounts();
-    }
-    if (actionData?.success && actionData?.deleted) {
       returnToDiscounts();
     }
   }, [actionData]);

@@ -1,10 +1,5 @@
 import { useEffect, useMemo } from "react";
-import {
-  ActionFunction,
-  json,
-  LoaderFunction,
-  redirect,
-} from "@remix-run/node";
+import { ActionFunction, json, LoaderFunction } from "@remix-run/node";
 import { useForm, useField } from "@shopify/react-form";
 import { CurrencyCode } from "@shopify/react-i18n";
 import {
@@ -38,7 +33,6 @@ import {
 } from "@shopify/polaris";
 
 import { authenticate } from "../shopify.server";
-import { log } from "console";
 
 /**
  * TypeScript interface for data returned from the loader function
@@ -173,60 +167,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   // Extract params and authenticate with Shopify Admin API
   const { functionId, id } = params;
   const { admin } = await authenticate.admin(request);
-
-  // Parse form data submitted from the client
-  const formData = await request.formData();
-
-  const { isDelete, discountMethod } = Object.fromEntries(formData);
-  let deleteDiscountResponse;
-  if (isDelete) {
-    console.log("method", discountMethod);
-
-    if (discountMethod === DiscountMethod.Code) {
-      deleteDiscountResponse = await admin.graphql(
-        `#graphql
-        mutation deleteCodeDiscount($id: ID!) {
-          discountCodeDelete(id: $id) {
-            deletedCodeDiscountId
-            userErrors {
-              field
-              code
-              message
-            }
-          }
-        }`,
-        {
-          variables: {
-            id: `gid://shopify/DiscountCodeNode/${id}`,
-          },
-        },
-      );
-    } else {
-      console.log("delete automatic discount");
-      deleteDiscountResponse = await admin.graphql(
-        `#graphql
-        mutation discountAutomaticDelete($id: ID!) {
-          discountAutomaticDelete(id: $id) {
-            deletedAutomaticDiscountId
-            userErrors {
-              field
-              code
-              message
-            }
-          }
-        }`,
-        {
-          variables: {
-            id: `gid://shopify/DiscountAutomaticNode/${id}`,
-          },
-        },
-      );
-      console.log("deleteDiscountResponse-automatic", deleteDiscountResponse);
-    }
-    return json({ success: true, deleted: true });
-  }
-  console.log("next");
-
   const {
     title,
     method,
@@ -238,6 +178,27 @@ export const action: ActionFunction = async ({ request, params }) => {
     endsAt,
     configuration,
   } = JSON.parse(formData.get("discount") as string);
+  // Parse form data submitted from the client
+  const formData = await request.formData();
+  const { isDelete } = Object.fromEntries(formData);
+  if (isDelete) {
+    const deleteDiscountResponse = await admin.graphql(
+      `#graphql
+      mutation {
+        discountCodeDelete(id: "gid://shopify/DiscountCodeNode/206265824") {
+          deletedCodeDiscountId
+          userErrors {
+            field
+            code
+            message
+          }
+        }
+      }`,
+    );
+
+    return null;
+  }
+
   // Fetch the existing metafield ID for the discount
 
   // This is needed for proper metafield updating
@@ -413,8 +374,6 @@ export default function VolumeEdit() {
   const actionData = useActionData<{
     errors?: Array<{ message: string; field: string[] }>;
     discount?: any;
-    success?: boolean;
-    deleted?: boolean;
   }>();
   const navigation = useNavigation();
   const todaysDate = useMemo(() => new Date().toISOString(), []);
@@ -439,17 +398,11 @@ export default function VolumeEdit() {
   const submitErrors = actionData?.errors || [];
   const returnToDiscounts = () => open("shopify://admin/discounts", "_top");
   const handleDelete = async () => {
-    submitForm(
-      { isDelete: true, discountMethod: discountMethod.value },
-      { method: "post" },
-    );
+    submitForm({ isDelete: true }, { method: "post" });
   };
   // Redirect to discounts list after successful update
   useEffect(() => {
     if (actionData?.errors?.length === 0 && actionData?.discount) {
-      returnToDiscounts();
-    }
-    if (actionData?.success && actionData?.deleted) {
       returnToDiscounts();
     }
   }, [actionData]);

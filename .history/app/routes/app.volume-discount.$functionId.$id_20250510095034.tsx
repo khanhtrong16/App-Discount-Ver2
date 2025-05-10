@@ -201,6 +201,8 @@ export const action: ActionFunction = async ({ request, params }) => {
           },
         },
       );
+      redirect("discounts");
+      console.log("deleteDiscountResponse", deleteDiscountResponse);
     } else {
       console.log("delete automatic discount");
       deleteDiscountResponse = await admin.graphql(
@@ -217,16 +219,16 @@ export const action: ActionFunction = async ({ request, params }) => {
         }`,
         {
           variables: {
-            id: `gid://shopify/DiscountAutomaticNode/${id}`,
+            id: `gid://shopify/DiscountCodeNode/${id}`,
           },
         },
       );
+      redirect("discounts");
       console.log("deleteDiscountResponse-automatic", deleteDiscountResponse);
     }
-    return json({ success: true, deleted: true });
-  }
-  console.log("next");
 
+    return null;
+  }
   const {
     title,
     method,
@@ -413,8 +415,6 @@ export default function VolumeEdit() {
   const actionData = useActionData<{
     errors?: Array<{ message: string; field: string[] }>;
     discount?: any;
-    success?: boolean;
-    deleted?: boolean;
   }>();
   const navigation = useNavigation();
   const todaysDate = useMemo(() => new Date().toISOString(), []);
@@ -447,9 +447,6 @@ export default function VolumeEdit() {
   // Redirect to discounts list after successful update
   useEffect(() => {
     if (actionData?.errors?.length === 0 && actionData?.discount) {
-      returnToDiscounts();
-    }
-    if (actionData?.success && actionData?.deleted) {
       returnToDiscounts();
     }
   }, [actionData]);
