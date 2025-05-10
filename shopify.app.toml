@@ -3,7 +3,7 @@
 client_id = "1c7489235ff789c56b0dafa86f8590ad"
 name = "Discounts-APP"
 handle = "discounts-app-103"
-application_url = "https://hiring-blackjack-concerts-virtue.trycloudflare.com"
+application_url = "https://sisters-regards-connecting-auditor.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "read_products,write_discounts,write_discounts_allocator_functions,writ
 
 [auth]
 redirect_urls = [
-  "https://hiring-blackjack-concerts-virtue.trycloudflare.com/auth/callback",
-  "https://hiring-blackjack-concerts-virtue.trycloudflare.com/auth/shopify/callback",
-  "https://hiring-blackjack-concerts-virtue.trycloudflare.com/api/auth/callback"
+  "https://sisters-regards-connecting-auditor.trycloudflare.com/auth/callback",
+  "https://sisters-regards-connecting-auditor.trycloudflare.com/auth/shopify/callback",
+  "https://sisters-regards-connecting-auditor.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
