@@ -1,0 +1,26 @@
+query RunInput($excludedCollectionIds: [ID!]) {
+  cart {
+    lines {
+      id
+      quantity
+
+      merchandise {
+        ... on ProductVariant {
+          id
+          product {
+            inExcludedCollection: inAnyCollection(ids: $excludedCollectionIds)
+            title
+          }
+        }
+      }
+    }
+  }
+  discountNode {
+    metafield(
+      namespace: "$app:volume-discount"
+      key: "function-configuration"
+    ) {
+      value
+    }
+  }
+}
