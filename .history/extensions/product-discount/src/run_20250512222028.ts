@@ -72,8 +72,8 @@ export function run(input: RunInput): FunctionRunResult {
       return null;
     })
     .filter((discount) => discount !== null);
-
   // return list discount with percentage and cartLineId
+
   return {
     discounts: DiscountList.map((discounts) => ({
       targets: [{ cartLine: { id: discounts.id } }],

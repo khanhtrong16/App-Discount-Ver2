@@ -5,26 +5,12 @@ const EMPTY_DISCOUNT: FunctionRunResult = {
   discountApplicationStrategy: DiscountApplicationStrategy.First,
   discounts: [],
 };
-function matchProductId(productCartList, productConfigId) {
-  return productCartList.filter((line) => {
-    if (
-      "product" in line.merchandise &&
-      line.merchandise &&
-      line.merchandise.product &&
-      line.merchandise.product.id
-    ) {
-      const cartProductId = line.merchandise.product.id;
-      return productConfigId.includes(cartProductId);
-    }
-    return false;
-  });
-}
+function matchProductId() {}
 export function run(input: RunInput): FunctionRunResult {
   // get configuration from metafield
   const configuration = JSON.parse(
     input?.discountNode?.metafield?.value ?? "{}",
   );
-  // check if configuration is valid
   if (!configuration.quantity || !configuration.percentage) {
     return EMPTY_DISCOUNT;
   }
@@ -32,11 +18,21 @@ export function run(input: RunInput): FunctionRunResult {
   const productConfigId: Array<string> = configuration.productId;
 
   let productList = null;
-  //Check if using product or collection
   if (productConfigId && productConfigId.length > 0) {
-    productList = matchProductId(productCarts, productConfigId);
+    productList = productCarts.filter((line) => {
+      if (
+        "product" in line.merchandise &&
+        line.merchandise &&
+        line.merchandise.product &&
+        line.merchandise.product.id
+      ) {
+        const cartProductId = line.merchandise.product.id;
+        return productConfigId.includes(cartProductId);
+      }
+      return false;
+    });
   } else {
-    // Get all products with valid collection
+    //
     productList = productCarts.filter((line) => {
       return (
         line.merchandise &&
@@ -72,8 +68,8 @@ export function run(input: RunInput): FunctionRunResult {
       return null;
     })
     .filter((discount) => discount !== null);
-
   // return list discount with percentage and cartLineId
+
   return {
     discounts: DiscountList.map((discounts) => ({
       targets: [{ cartLine: { id: discounts.id } }],

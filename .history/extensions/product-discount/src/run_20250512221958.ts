@@ -32,7 +32,7 @@ export function run(input: RunInput): FunctionRunResult {
   const productConfigId: Array<string> = configuration.productId;
 
   let productList = null;
-  //Check if using product or collection
+  //
   if (productConfigId && productConfigId.length > 0) {
     productList = matchProductId(productCarts, productConfigId);
   } else {
@@ -72,8 +72,8 @@ export function run(input: RunInput): FunctionRunResult {
       return null;
     })
     .filter((discount) => discount !== null);
-
   // return list discount with percentage and cartLineId
+
   return {
     discounts: DiscountList.map((discounts) => ({
       targets: [{ cartLine: { id: discounts.id } }],

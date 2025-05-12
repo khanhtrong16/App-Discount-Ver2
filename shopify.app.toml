@@ -3,7 +3,7 @@
 client_id = "1c7489235ff789c56b0dafa86f8590ad"
 name = "Discounts-APP"
 handle = "discounts-app-103"
-application_url = "https://sit-caused-maker-tell.trycloudflare.com"
+application_url = "https://spectacular-casa-libraries-session.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "read_products,write_discounts,write_discounts_allocator_functions,writ
 
 [auth]
 redirect_urls = [
-  "https://sit-caused-maker-tell.trycloudflare.com/auth/callback",
-  "https://sit-caused-maker-tell.trycloudflare.com/auth/shopify/callback",
-  "https://sit-caused-maker-tell.trycloudflare.com/api/auth/callback"
+  "https://spectacular-casa-libraries-session.trycloudflare.com/auth/callback",
+  "https://spectacular-casa-libraries-session.trycloudflare.com/auth/shopify/callback",
+  "https://spectacular-casa-libraries-session.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
