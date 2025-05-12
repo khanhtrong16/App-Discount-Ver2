@@ -18,30 +18,43 @@ export function run(input: RunInput): FunctionRunResult {
   }
   const productCarts = input.cart.lines;
   const productConfigId: Array<string> = configuration.productId;
+  console.log("productConfigId", productConfigId);
 
   let productList = null;
-  if (productConfigId && productConfigId.length > 0) {
+  if (productConfigId.length > 0) {
+    console.log("productConfigId.length", productConfigId.length);
+
+    console.log("a");
+
     productList = productCarts.filter((line) => {
-      if (
-        "product" in line.merchandise &&
-        line.merchandise &&
-        line.merchandise.product &&
-        line.merchandise.product.id
-      ) {
+      if ("product" in line.merchandise) {
         const cartProductId = line.merchandise.product.id;
         return productConfigId.includes(cartProductId);
       }
       return false;
     });
   } else {
+    console.log("n");
     productList = productCarts.filter((line) => {
-      return (
-        line.merchandise &&
-        line.merchandise.product &&
-        line.merchandise.product.inExcludedCollection === true
-      );
+      return line.merchandise.product.inExcludedCollection == true;
     });
   }
+  //** Check product in cart */
+  // get list product in cart with id match configuration.productId
+
+  // console.log("matchingProducts", JSON.stringify(matchingProducts, null, 2));
+
+  //** Check collection in cart */
+  // const matchingCollection = productCarts.filter((line) => {
+  //   return line.merchandise.product.inExcludedCollection == true;
+  // });
+  // console.log(
+  //   "matchingCollection",
+  //   JSON.stringify(matchingCollection, null, 2),
+  // );
+  // get list discount with quantity match configuration.quantity
+  // check quantity of product in cart with id match configuration.productId
+  console.log("productList", JSON.stringify(productList, null, 2));
 
   const DiscountList = productList
     .map((line) => {

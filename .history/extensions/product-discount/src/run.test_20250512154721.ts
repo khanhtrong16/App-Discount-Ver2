@@ -13,6 +13,7 @@ import { FunctionResult, DiscountApplicationStrategy } from "../generated/api";
 //       discounts: [],
 //       discountApplicationStrategy: DiscountApplicationStrategy.First,
 //     };
+
 //     expect(result).toEqual(expected);
 //   });
 // });

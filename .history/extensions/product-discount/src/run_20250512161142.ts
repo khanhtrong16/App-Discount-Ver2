@@ -7,43 +7,39 @@ const EMPTY_DISCOUNT: FunctionRunResult = {
 };
 
 export function run(input: RunInput): FunctionRunResult {
-  console.log("input đây:", JSON.stringify(input, null, 2));
-
   // get configuration from metafield
   const configuration = JSON.parse(
     input?.discountNode?.metafield?.value ?? "{}",
   );
+  console.log("configuration đây: ", JSON.stringify(configuration, null, 2));
   if (!configuration.quantity || !configuration.percentage) {
     return EMPTY_DISCOUNT;
   }
   const productCarts = input.cart.lines;
-  const productConfigId: Array<string> = configuration.productId;
+  // console.log("configuration", JSON.stringify(configuration, null, 2));
+  const productConfigId = configuration.productId;
+  console.log("productConfigId", productConfigId);
 
-  let productList = null;
-  if (productConfigId && productConfigId.length > 0) {
-    productList = productCarts.filter((line) => {
-      if (
-        "product" in line.merchandise &&
-        line.merchandise &&
-        line.merchandise.product &&
-        line.merchandise.product.id
-      ) {
-        const cartProductId = line.merchandise.product.id;
-        return productConfigId.includes(cartProductId);
-      }
-      return false;
-    });
-  } else {
-    productList = productCarts.filter((line) => {
-      return (
-        line.merchandise &&
-        line.merchandise.product &&
-        line.merchandise.product.inExcludedCollection === true
-      );
-    });
-  }
+  // console.log("ArrayProductId", JSON.stringify(productConfigId, null, 2));
+  //** Check product in cart */
+  get list product in cart with id match configuration.productId
+  let matchingProducts = productCarts.filter((line) => {
+    if ("product" in line.merchandise) {
+      const cartProductId = line.merchandise.product.id;
+      return productConfigId.includes(cartProductId);
+    }
+    return false;
+  });
 
-  const DiscountList = productList
+  //** Check collection in cart */
+  const matchingCollection = productCarts.filter((line) => {
+    return line.merchandise.product.inExcludedCollection == true;
+  });
+  // console.log("c", JSON.stringify(matchingProducts, null, 2));
+
+  // get list discount with quantity match configuration.quantity
+  // check quantity of product in cart with id match configuration.productId
+  const DiscountList = matchingCollection
     .map((line) => {
       // Get all tier keys and sort them in descending order
       const tierKeys = Object.keys(configuration.quantity)
@@ -70,6 +66,7 @@ export function run(input: RunInput): FunctionRunResult {
     })
     .filter((discount) => discount !== null);
   // return list discount with percentage and cartLineId
+  // console.log("DiscountList", JSON.stringify(DiscountList, null, 2));
 
   return {
     discounts: DiscountList.map((discounts) => ({

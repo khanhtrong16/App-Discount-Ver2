@@ -7,7 +7,7 @@ const EMPTY_DISCOUNT: FunctionRunResult = {
 };
 
 export function run(input: RunInput): FunctionRunResult {
-  console.log("input đây:", JSON.stringify(input, null, 2));
+  console.log("input", JSON.stringify(input, null, 2));
 
   // get configuration from metafield
   const configuration = JSON.parse(
@@ -17,32 +17,29 @@ export function run(input: RunInput): FunctionRunResult {
     return EMPTY_DISCOUNT;
   }
   const productCarts = input.cart.lines;
-  const productConfigId: Array<string> = configuration.productId;
+  const productConfigId = configuration.productId;
+  let productList = [];
+  //** Check product in cart */
+  // get list product in cart with id match configuration.productId
+  let matchingProducts = productCarts.filter((line) => {
+    if ("product" in line.merchandise) {
+      const cartProductId = line.merchandise.product.id;
+      return productConfigId.includes(cartProductId);
+    }
+    return false;
+  });
+  //** Check collection in cart */
+  const matchingCollection = productCarts.filter((line) => {
+    return line.merchandise.product.inExcludedCollection == true;
+  });
 
-  let productList = null;
-  if (productConfigId && productConfigId.length > 0) {
-    productList = productCarts.filter((line) => {
-      if (
-        "product" in line.merchandise &&
-        line.merchandise &&
-        line.merchandise.product &&
-        line.merchandise.product.id
-      ) {
-        const cartProductId = line.merchandise.product.id;
-        return productConfigId.includes(cartProductId);
-      }
-      return false;
-    });
-  } else {
-    productList = productCarts.filter((line) => {
-      return (
-        line.merchandise &&
-        line.merchandise.product &&
-        line.merchandise.product.inExcludedCollection === true
-      );
-    });
-  }
-
+  // if (matchingProducts.length > 0) {
+  //   productList = matchingProducts;
+  // } else {
+  //   productList = matchingCollection;
+  // }
+  // get list discount with quantity match configuration.quantity
+  // check quantity of product in cart with id match configuration.productId
   const DiscountList = productList
     .map((line) => {
       // Get all tier keys and sort them in descending order
