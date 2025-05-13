@@ -62,6 +62,7 @@ export function run(input: RunInput): FunctionRunResult {
     .map((line) => {
       // Get all tier keys and sort them in descending order
       const tierKeys = tierArrangement(configuration);
+
       // Check each tier starting from the highest
       for (const tierKey of tierKeys) {
         if (line.quantity >= configuration.quantity[tierKey]) {
@@ -89,4 +90,3 @@ export function run(input: RunInput): FunctionRunResult {
     discountApplicationStrategy: DiscountApplicationStrategy.All,
   };
 }
-// function

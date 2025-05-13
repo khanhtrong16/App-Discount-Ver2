@@ -89,4 +89,3 @@ export function run(input: RunInput): FunctionRunResult {
     discountApplicationStrategy: DiscountApplicationStrategy.All,
   };
 }
-// function

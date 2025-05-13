@@ -14,6 +14,39 @@ function makeInput({ cartLines = [], metafieldValue = null } = {}) {
     },
   };
 }
+
+/**
+ * Test group: General discount function behavior
+ * Purpose: Ensure the function returns no discounts when configuration is missing.
+ */
+describe("product discount function", () => {
+  it("returns no discounts without configuration", () => {
+    const input = makeInput({
+      cartLines: [
+        {
+          id: "line0",
+          quantity: 10,
+          merchandise: {
+            __typename: "ProductVariant",
+            id: "gid://shopify/ProductVariant/123456789",
+            product: {
+              id: "product0",
+              title: "Test",
+              inExcludedCollection: false,
+            },
+          },
+        },
+      ],
+      metafieldValue: null,
+    });
+    const result = run(input);
+    expect(result.discounts.length).toBe(0);
+    expect(result.discountApplicationStrategy).toBe(
+      DiscountApplicationStrategy.First,
+    );
+  });
+});
+
 /**
  * Test group: Collection discount
  * Purpose: Test discount application when filtering by collection (excluded collection logic).
@@ -28,7 +61,7 @@ describe("Collection discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", includesCollection: true },
+            product: { id: "product1", title: "A", inExcludedCollection: true },
           },
         },
       ],
@@ -55,7 +88,7 @@ describe("Collection discount", () => {
             product: {
               id: "product1",
               title: "A",
-              includesCollection: false,
+              inExcludedCollection: false,
             },
           },
         },
@@ -79,7 +112,7 @@ describe("Collection discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", includesCollection: true },
+            product: { id: "product1", title: "A", inExcludedCollection: true },
           },
         },
         {
@@ -88,7 +121,7 @@ describe("Collection discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant2",
-            product: { id: "product2", title: "B", includesCollection: true },
+            product: { id: "product2", title: "B", inExcludedCollection: true },
           },
         },
       ],
@@ -120,7 +153,7 @@ describe("Product discount", () => {
             product: {
               id: "product1",
               title: "A",
-              includesCollection: false,
+              inExcludedCollection: false,
             },
           },
         },
@@ -147,7 +180,7 @@ describe("Product discount", () => {
             product: {
               id: "product1",
               title: "A",
-              includesCollection: false,
+              inExcludedCollection: false,
             },
           },
         },
@@ -160,7 +193,7 @@ describe("Product discount", () => {
             product: {
               id: "product2",
               title: "B",
-              includesCollection: false,
+              inExcludedCollection: false,
             },
           },
         },
@@ -191,7 +224,7 @@ describe("Tier discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", includesCollection: true },
+            product: { id: "product1", title: "A", inExcludedCollection: true },
           },
         },
       ],
@@ -214,7 +247,7 @@ describe("Tier discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", includesCollection: true },
+            product: { id: "product1", title: "A", inExcludedCollection: true },
           },
         },
       ],
@@ -228,7 +261,36 @@ describe("Tier discount", () => {
     expect(result.discounts.length).toBe(1);
     expect(result.discounts[0]?.value.percentage.value).toBe("20");
   });
+
+  it("applies correct discount when tier01 quantity is higher than tier02", () => {
+    const input = makeInput({
+      cartLines: [
+        {
+          id: "line1",
+          quantity: 7,
+          merchandise: {
+            __typename: "ProductVariant",
+            id: "variant1",
+            product: {
+              id: "product1",
+              title: "A",
+              inExcludedCollection: false,
+            },
+          },
+        },
+      ],
+      metafieldValue: JSON.stringify({
+        productId: [],
+        quantity: { tier01: 10, tier02: 5 },
+        percentage: { tier01: 10, tier02: 20 },
+      }),
+    });
+    const result = run(input);
+    // tier02 will be applied because quantity >= 5 (tier02) but < 10 (tier01)
+    expect(result.discounts.length).toBe(1);
+    expect(result.discounts[0]?.value.percentage.value).toBe("20");
+  });
+
   // Note: Case where a product belongs to multiple discounts is handled outside the run function,
   // because run only processes one discount configuration at a time.
 });
-//tets

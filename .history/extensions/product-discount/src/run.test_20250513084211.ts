@@ -231,4 +231,3 @@ describe("Tier discount", () => {
   // Note: Case where a product belongs to multiple discounts is handled outside the run function,
   // because run only processes one discount configuration at a time.
 });
-//tets

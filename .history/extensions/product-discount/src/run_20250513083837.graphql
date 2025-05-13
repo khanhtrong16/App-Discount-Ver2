@@ -25,4 +25,3 @@ query RunInput($collectionId: [ID!]) {
     }
   }
 }
-# graphql
