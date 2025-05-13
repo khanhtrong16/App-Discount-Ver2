@@ -19,6 +19,18 @@ function matchProductId(productCartList, productConfigId) {
     return false;
   });
 }
+function tierArrangement(configuration) {
+  const tierKeys = Object.keys(configuration.quantity)
+    .filter((key) => key.startsWith("tier"))
+    .sort((a, b) => {
+      // Extract numbers from tier keys (e.g., "tier01" -> 1)
+      const numA = parseInt(a.replace("tier", ""));
+      const numB = parseInt(b.replace("tier", ""));
+      // Sort in descending order (highest tier first)
+      return numB - numA;
+    });
+  return tierKeys;
+}
 export function run(input: RunInput): FunctionRunResult {
   // get configuration from metafield
   const configuration = JSON.parse(
@@ -41,7 +53,7 @@ export function run(input: RunInput): FunctionRunResult {
       return (
         line.merchandise &&
         line.merchandise.product &&
-        line.merchandise.product.inExcludedCollection === true
+        line.merchandise.product.includesCollection === true
       );
     });
   }
@@ -49,16 +61,7 @@ export function run(input: RunInput): FunctionRunResult {
   const DiscountList = productList
     .map((line) => {
       // Get all tier keys and sort them in descending order
-      const tierKeys = Object.keys(configuration.quantity)
-        .filter((key) => key.startsWith("tier"))
-        .sort((a, b) => {
-          // Extract numbers from tier keys (e.g., "tier01" -> 1)
-          const numA = parseInt(a.replace("tier", ""));
-          const numB = parseInt(b.replace("tier", ""));
-          // Sort in descending order (highest tier first)
-          return numB - numA;
-        });
-
+      const tierKeys = tierArrangement(configuration);
       // Check each tier starting from the highest
       for (const tierKey of tierKeys) {
         if (line.quantity >= configuration.quantity[tierKey]) {

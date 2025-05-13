@@ -9,7 +9,7 @@ query RunInput($collectionId: [ID!]) {
           id
           product {
             id
-            inExcludedCollection: inAnyCollection(ids: $collectionId)
+            includesCollection: inAnyCollection(ids: $collectionId)
             title
           }
         }

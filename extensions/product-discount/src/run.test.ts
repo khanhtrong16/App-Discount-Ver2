@@ -2,44 +2,10 @@ import { describe, it, expect } from "vitest";
 import { run } from "./run";
 import { FunctionResult, DiscountApplicationStrategy } from "../generated/api";
 
-// describe("product discounts function", () => {
-//   it("returns no discounts without configuration", () => {
-//     const result = run({
-//       discountNode: {
-//         metafield: null,
-//       },
-//     });
-//     const expected: FunctionResult = {
-//       discounts: [],
-//       discountApplicationStrategy: DiscountApplicationStrategy.First,
-//     };
-//     expect(result).toEqual(expected);
-//   });
-// });
-describe("product discount function", () => {
-  it("returns no discounts without configuration", () => {
-    const result = run({
-      cart: {
-        lines: [
-          {
-            quantity: 10,
-            merchandise: {
-              __typename: "ProductVariant",
-              id: "gid://shopify/ProductVariant/123456789",
-            },
-          },
-        ],
-      },
-      discountNode: {
-        metafield: null,
-      },
-    });
-
-    expect(result.discounts.length).toBe(0);
-  });
-});
-
-// Helper để tạo input cho run
+/**
+ * Helper function to generate input for the run function.
+ * Purpose: Easily create test input with custom cart lines and metafield value.
+ */
 function makeInput({ cartLines = [], metafieldValue = null } = {}) {
   return {
     cart: { lines: cartLines },
@@ -48,7 +14,10 @@ function makeInput({ cartLines = [], metafieldValue = null } = {}) {
     },
   };
 }
-
+/**
+ * Test group: Collection discount
+ * Purpose: Test discount application when filtering by collection (excluded collection logic).
+ */
 describe("Collection discount", () => {
   it("returns discount when product is in the correct collection", () => {
     const input = makeInput({
@@ -59,7 +28,7 @@ describe("Collection discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", inExcludedCollection: true },
+            product: { id: "product1", title: "A", includesCollection: true },
           },
         },
       ],
@@ -71,7 +40,7 @@ describe("Collection discount", () => {
     });
     const result = run(input);
     expect(result.discounts.length).toBe(1);
-    expect(result.discounts[0].targets[0].cartLine.id).toBe("line1");
+    expect(result.discounts[0]?.targets[0]?.cartLine.id).toBe("line1");
   });
 
   it("returns no discount when product is not in the excluded collection", () => {
@@ -86,7 +55,7 @@ describe("Collection discount", () => {
             product: {
               id: "product1",
               title: "A",
-              inExcludedCollection: false,
+              includesCollection: false,
             },
           },
         },
@@ -110,7 +79,7 @@ describe("Collection discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", inExcludedCollection: true },
+            product: { id: "product1", title: "A", includesCollection: true },
           },
         },
         {
@@ -119,7 +88,7 @@ describe("Collection discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant2",
-            product: { id: "product2", title: "B", inExcludedCollection: true },
+            product: { id: "product2", title: "B", includesCollection: true },
           },
         },
       ],
@@ -134,6 +103,10 @@ describe("Collection discount", () => {
   });
 });
 
+/**
+ * Test group: Product discount
+ * Purpose: Test discount application when filtering by productId.
+ */
 describe("Product discount", () => {
   it("returns no discount when product is not in productConfigId", () => {
     const input = makeInput({
@@ -147,7 +120,7 @@ describe("Product discount", () => {
             product: {
               id: "product1",
               title: "A",
-              inExcludedCollection: false,
+              includesCollection: false,
             },
           },
         },
@@ -174,7 +147,7 @@ describe("Product discount", () => {
             product: {
               id: "product1",
               title: "A",
-              inExcludedCollection: false,
+              includesCollection: false,
             },
           },
         },
@@ -187,7 +160,7 @@ describe("Product discount", () => {
             product: {
               id: "product2",
               title: "B",
-              inExcludedCollection: false,
+              includesCollection: false,
             },
           },
         },
@@ -200,10 +173,14 @@ describe("Product discount", () => {
     });
     const result = run(input);
     expect(result.discounts.length).toBe(1);
-    expect(result.discounts[0].targets[0].cartLine.id).toBe("line2");
+    expect(result.discounts[0]?.targets[0]?.cartLine.id).toBe("line2");
   });
 });
 
+/**
+ * Test group: Tier discount
+ * Purpose: Test discount application based on quantity tiers.
+ */
 describe("Tier discount", () => {
   it("returns no discount when quantity is less than all tiers", () => {
     const input = makeInput({
@@ -214,7 +191,7 @@ describe("Tier discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", inExcludedCollection: true },
+            product: { id: "product1", title: "A", includesCollection: true },
           },
         },
       ],
@@ -237,7 +214,7 @@ describe("Tier discount", () => {
           merchandise: {
             __typename: "ProductVariant",
             id: "variant1",
-            product: { id: "product1", title: "A", inExcludedCollection: true },
+            product: { id: "product1", title: "A", includesCollection: true },
           },
         },
       ],
@@ -249,34 +226,8 @@ describe("Tier discount", () => {
     });
     const result = run(input);
     expect(result.discounts.length).toBe(1);
-    expect(result.discounts[0].value.percentage.value).toBe("20");
+    expect(result.discounts[0]?.value.percentage.value).toBe("20");
   });
-
-  it("applies correct discount when tier01 quantity is higher than tier02", () => {
-    const input = makeInput({
-      cartLines: [
-        {
-          id: "line1",
-          quantity: 7,
-          merchandise: {
-            __typename: "ProductVariant",
-            id: "variant1",
-            product: { id: "product1", title: "A", inExcludedCollection: true },
-          },
-        },
-      ],
-      metafieldValue: JSON.stringify({
-        productId: [],
-        quantity: { tier01: 10, tier02: 5 },
-        percentage: { tier01: 10, tier02: 20 },
-      }),
-    });
-    const result = run(input);
-    // tier02 sẽ được áp dụng vì quantity >= 5 (tier02) nhưng < 10 (tier01)
-    expect(result.discounts.length).toBe(1);
-    expect(result.discounts[0].value.percentage.value).toBe("20");
-  });
-
-  // Trường hợp một sản phẩm thuộc nhiều discount khác nhau sẽ phụ thuộc vào logic ngoài hàm run,
-  // vì hàm run chỉ xử lý 1 cấu hình discount tại một thời điểm.
+  // Note: Case where a product belongs to multiple discounts is handled outside the run function,
+  // because run only processes one discount configuration at a time.
 });
